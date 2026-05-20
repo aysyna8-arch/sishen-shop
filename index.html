@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SESHEN | Premium E-Commerce</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght=700&family=Inter:wght=300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --brand-blue: #003366;
+            --white: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6;
+            overflow-x: hidden;
+        }
+
+        /* الهيدر */
+        header {
+            background-color: var(--brand-blue);
+            padding: 20px;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+        .main-logo { width: 80px; height: auto; margin-bottom: 10px; }
+        .brand-name { font-size: 1.5rem; letter-spacing: 3px; text-transform: uppercase; }
+
+        /* أيقونة السلة في الهيدر */
+        .cart-icon-container {
+            position: absolute;
+            top: 50%;
+            right: 25px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1.4rem;
+        }
+        #cart-count {
+            background: #ff4d4d;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 7px;
+            font-size: 0.8rem;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-weight: bold;
+        }
+
+        /* الأقسام الرئيسية */
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; padding: 25px;
+        }
+        .window {
+            height: 150px; display: flex; align-items: center; justify-content: center;
+            border-radius: 12px; cursor: pointer; color: white; font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .window:hover { transform: scale(1.02); }
+
+        .labels { background-color: #90ee90; color: #1a3a1a !important; }
+        .cosmetics { background-color: #556b2f; }
+        .accessories { background-color: #800020; }
+        .keychains { background-color: #008080; }
+
+        /* شبكة المنتجات (المقاسات الملمومة للاستيكرات) */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); 
+            gap: 15px; padding: 15px;
+        }
+
+        .product-card {
+            background: white; padding: 10px; border-radius: 10px;
+            text-align: center; box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .img-container {
+            width: 100%; height: 130px; 
+            margin-bottom: 8px;
+        }
+
+        .img-container img {
+            width: 100%; height: 100%; object-fit: contain;
+        }
+
+        .price { color: var(--brand-blue); font-weight: bold; font-size: 1rem; margin: 5px 0; }
+
+        .buy-btn {
+            background: var(--brand-blue); color: white; border: none;
+            padding: 8px; width: 100%; border-radius: 5px; cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* --- المودال (النافذة البيضاء) --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal.active { display: flex !important; }
+
+        .modal-content {
+            background: white; padding: 25px; border-radius: 15px;
+            width: 90%; max-width: 400px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .modal-content h3 { margin-bottom: 15px; color: var(--brand-blue); }
+        .modal-content input, .modal-content textarea {
+            width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;
+            text-align: right; font-family: inherit;
+        }
+
+        /* --- عداد الكمية جوه النافذة البيضاء --- */
+        .quantity-selector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 15px 0;
+            gap: 8px;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .quantity-selector label {
+            font-weight: bold;
+            color: #333;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+
+        .quantity-selector button {
+            background-color: var(--brand-blue);
+            color: white; border: none;
+            width: 32px; height: 32px;
+            cursor: pointer; font-weight: bold;
+            font-size: 18px; border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .quantity-selector input {
+            width: 50px !important; height: 32px;
+            text-align: center !important; border: 1px solid #ccc !important;
+            font-size: 16px; font-weight: bold; margin-bottom: 0 !important;
+            border-radius: 6px; background: white;
+        }
+
+        .confirm-btn {
+            background: #28a745; color: white; border: none;
+            padding: 10px; width: 100%; border-radius: 5px; cursor: pointer;
+            font-weight: bold; margin-bottom: 8px;
+        }
+        .cancel-btn {
+            background: #dc3545; color: white; border: none;
+            padding: 10px; width: 100%; border-radius: 5px; cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-sidebar { display: none; }
+        .hidden { display: none !important; }
+        .back-btn { margin: 20px; padding: 10px; cursor: pointer; background: #ccc; border: none; border-radius: 5px; }
+        
+        footer {
+            text-align: center; padding: 20px;
+            background: #e9ecef; margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="cart-icon-container" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count">0</span>
+        </div>
+        <div class="header-content">
+            <div class="logo-container">
+                <img src="lotus-logo.png" alt="SESHEN Logo" class="main-logo">
+                <h1 class="brand-name">SESHEN</h1>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section id="home-grid" class="home-grid">
+            <div class="window labels" onclick="navigateTo('labels')"><h2>Labels</h2></div>
+            <div class="window cosmetics" onclick="navigateTo('cosmetics')"><h2>Cosmetics</h2></div>
+            <div class="window accessories" onclick="navigateTo('accessories')"><h2>Accessories</h2></div>
+            <div class="window keychains" onclick="navigateTo('keychains')"><h2>Keychains</h2></div>
+        </section>
+
+        <section id="product-page" class="hidden">
+            <button class="back-btn" onclick="goHome()">← Back to Home</button>
+            <div id="page-content"></div>
+        </section>
+    </main>
+
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content">
+            <h3>بيانات الشحن وتأكيد الطلب</h3>
+            <form id="order-form">
+                <input type="text" id="user-name" placeholder="الاسم بالكامل" required>
+                <input type="tel" id="user-phone" placeholder="رقم التليفون" required>
+                <textarea id="user-address" placeholder="العنوان بالتفصيل" required></textarea>
+                
+                <div class="quantity-selector">
+                    <label>حدد الكمية:</label>
+                    <button type="button" onclick="updateModalQty(-1)">-</button>
+                    <input type="number" id="modal-qty" value="1" min="1" readonly>
+                    <button type="button" onclick="updateModalQty(1)">+</button>
+                </div>
+
+                <button type="submit" class="confirm-btn">تأكيد الطلب</button>
+                <button type="button" onclick="hideCheckoutForm()" class="cancel-btn">إلغاء</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 SESHEN. Professional Elegance.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <script>
+        let cart = [];
+        const products = { labels: [] };
+
+        // 1. توليد الاستيكرات بالمسار الصحيح المباشر (image1.jpg) بدون كلمة stickers/
+        for (let i = 1; i <= 47; i++) {
+            products.labels.push({
+                id: i,
+                name: `Sticker ${i}`,
+                price: 20,
+                img: `image${i}.jpg`
+            });
+        }
+
+        // 2. تفعيل EmailJS
+        (function() {
+            emailjs.init("Nlnk5PAJFTGzPSZbK"); 
+        })();
+
+        function navigateTo(category) {
+            document.getElementById('home-grid').classList.add('hidden');
+            document.getElementById('product-page').classList.remove('hidden');
+            const content = document.getElementById('page-content');
+
+            if (category === 'labels') {
+                content.innerHTML = `<div class="product-grid">
+                    ${products.labels.map(p => `
+                        <div class="product-card">
+                            <div class="img-container">
+                                <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/150?text=No+Image'">
+                            </div>
+                            <h3>${p.name}</h3>
+                            <p class="price">${p.price} EGP</p>
+                            <button class="buy-btn" onclick="addToCart(${p.id})">Buy Now</button>
+                        </div>
+                    `).join('')}
+                </div>`;
+            }
+        }
+
+        // الضغط على الاستيكر يزود العداد بس وميفتحش المودال فجأة
+        function addToCart(id) {
+            const product = products.labels.find(p => p.id === id);
+            if(product) {
+                cart.push(product);
+                updateCartUI();
+                alert(`تم إضافة ${product.name} إلى السلة بنجاح! اضغطي على السلة فوق لتأكيد الكمية وبيانات الشحن.`);
+            }
+        }
+
+        function updateCartUI() {
+            const countElem = document.getElementById('cart-count');
+            if(countElem) countElem.innerText = cart.length;
+        }
+
+        // السلة فوق هي اللي بتفتح النافذة البيضاء (المودال)
+        function toggleCart() {
+            if (cart.length === 0) {
+                alert("السلة فارغة، يرجى اختيار استيكر أولاً!");
+                return;
+            }
+            showCheckoutForm();
+        }
+
+        function showCheckoutForm() {
+            const modal = document.getElementById('checkout-modal');
+            if(modal) {
+                modal.classList.add('active');
+                document.getElementById('modal-qty').value = 1; // بيرست الكمية لـ 1 عند الفتح
+            }
+        }
+
+        function hideCheckoutForm() {
+            const modal = document.getElementById('checkout-modal');
+            if(modal) modal.classList.remove('active');
+        }
+
+        function goHome() {
+            document.getElementById('home-grid').classList.remove('hidden');
+            document.getElementById('product-page').classList.add('hidden');
+        }
+
+        // تحريك أزرار الـ + والـ - جوه النافذة البيضاء
+        function updateModalQty(change) {
+            let input = document.getElementById('modal-qty');
+            if(input) {
+                let currentVal = parseInt(input.value);
+                let newVal = currentVal + change;
+                if (newVal >= 1) {
+                    input.value = newVal;
+                }
+            }
+        }
+
+        // الإرسال الفعلي للـ EmailJS بحساب الكمية والسعر الإجمالي المضروب فيها
+        document.getElementById('order-form').onsubmit = function(e) {
+            e.preventDefault();
+
+            const quantity = parseInt(document.getElementById('modal-qty').value);
+            const details = cart.map(p => p.name).join(' , ');
+            const baseTotal = cart.reduce((sum, p) => sum + p.price, 0);
+            const finalTotal = baseTotal * quantity;
+
+            const templateParams = {
+                user_name: document.getElementById('user-name').value,
+                user_phone: document.getElementById('user-phone').value,
+                user_address: document.getElementById('user-address').value,
+                order_details: `${details} (الكمية المطلوبة: ${quantity} حبة)`,
+                total_price: finalTotal + " EGP"
+            };
+
+            emailjs.send('service_381sf4d', 'template_e20euif', templateParams)
+                .then(function(response) {
+                    alert(`مبروك يا ${templateParams.user_name}! الطلب وصلني بنجاح لعدد ${quantity} قطع.`);
+                    cart = [];
+                    updateCartUI();
+                    hideCheckoutForm();
+                    document.getElementById('order-form').reset();
+                }, function(error) {
+                    alert("للأسف حصلت مشكلة أثناء إرسال الطلب، حاولي تاني.");
+                    console.error("EmailJS Error:", error);
+                });
+        };
+    </script>
+</body>
+</html>
